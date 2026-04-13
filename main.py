@@ -6,10 +6,28 @@ from typing import List
 
 app = FastAPI()
 
+@app.get("/")
+def read_root():
+    dns = "http://ec2-34-230-77-19.compute-1.amazonaws.com"
+    return {
+        "_links": {
+            "students": {
+                "href": f"{dns}/alumnos{{?page,size,sort*}}",
+                "templated": True
+            },
+            "teachers": {
+                "href": f"{dns}/profesores{{?page,size,sort*}}",
+                "templated": True
+            },
+            "profile": {
+                "href": f"{dns}/profile"
+            }
+        }
+    }
+
 # --- SOLUCIÓN PARA EL AUTOTEST: Convertir 422 en 400 ---
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    # El test de Eduardo espera 400 cuando los campos están mal [cite: 24]
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
         content={"detail": exc.errors()}
@@ -30,7 +48,7 @@ class Profesor(BaseModel):
     apellidos: str = Field(..., min_length=1)
     horasClase: int
 
-# Base de datos en memoria [cite: 9]
+# Base de datos en memoria 
 db_alumnos = []
 db_profesores = []
 
