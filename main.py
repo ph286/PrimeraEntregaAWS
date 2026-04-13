@@ -8,7 +8,7 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    dns = "http://ec2-34-230-77-19.compute-1.amazonaws.com"
+    dns = "http://ec2-54-90-102-217.compute-1.amazonaws.com"
     return {
         "_links": {
             "students": {
